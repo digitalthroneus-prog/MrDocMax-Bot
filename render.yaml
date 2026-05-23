@@ -1,0 +1,13 @@
+services:
+  - type: worker
+    name: mrdocmax-bot
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
+    envVars:
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: EMERGENT_API_KEY
+        sync: false
+      - key: EMERGENT_API_BASE_URL
+        value: https://integrations.emergentagent.com/llm
