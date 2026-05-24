@@ -55,19 +55,19 @@ MENU, DEPT_PICK, SUB_MENU, DETAILS = range(4)
 # --- Global Wealth Structuring Library ---
 DEPARTMENTS = {
     "CORPORATE STRUCTURING": [
-        "Offshore LLC Formation", "International Business Co (IBC)", "Holding Company Structure", "IP Ownership Entity", "Investment Vehicle"
+        "International Holding Entity", "Offshore LLC Formation", "International Business Co (IBC)", "IP Ownership Entity", "Investment Vehicle"
     ],
     "TRUST & ASSET PROTECTION": [
-        "Offshore Discretionary Trust", "Private Interest Foundation", "Estate Planning Structure", "Creditor Protection Plan"
+        "Cross-Border Wealth Planning", "Offshore Discretionary Trust", "Private Interest Foundation", "Estate Planning Structure"
     ],
     "PRIVACY & ADMINISTRATION": [
-        "Nominee Director Service", "Nominee Shareholder Service", "Registered Office Address", "Mail Forwarding / Digital Post", "Corporate Secretary"
+        "Nominee Administration", "Nominee Director Service", "Nominee Shareholder Service", "Registered Office Address", "Mail Forwarding"
     ],
     "BANKING & PAYMENTS": [
-        "Private Bank Introduction", "Multi-Currency Account Setup", "Merchant Processing Portal", "Crypto-Friendly Structuring"
+        "Private Banking Solution", "Private Bank Introduction", "Multi-Currency Account Setup", "Merchant Processing Portal"
     ],
     "COMPLIANCE & RENEWALS": [
-        "KYC File Preparation", "Source-of-Funds Documentation", "FATCA / CRS Classification", "Annual Registry Renewal"
+        "Compliance-Light Jurisdiction Brief", "KYC File Preparation", "Source-of-Funds Documentation", "FATCA / CRS Classification"
     ]
 }
 
@@ -79,12 +79,11 @@ STATE_TEMPLATES = {
 }
 
 DOC_FIELDS = {
-    "Offshore LLC Formation": "ENTITY NAME:\nJURISDICTION:\nPRINCIPAL DIRECTOR:\nINITIAL CAPITALIZATION:\nBUSINESS PURPOSE:",
-    "Discretionary Trust Deed": "TRUST NAME:\nSETTLOR NAME:\nTRUSTEE DETAILS:\nBENEFICIARY CLASS:\nASSET DESCRIPTION:",
-    "Nominee Director Service": "BENEFICIAL OWNER:\nNOMINEE NAME:\nENTITY REFERENCE:\nEFFECTIVE DATE:",
-    "Private Bank Introduction": "CLIENT NAME:\nTARGET BANK:\nCURRENCY PREFERENCE:\nINITIAL DEPOSIT ESTIMATE:",
-    "Merchant Processing Portal": "BUSINESS NAME:\nESTIMATED MONTHLY VOLUME:\nPRIMARY REGION:\nPRODUCT/SERVICE DESCRIPTION:",
-    "KYC File Preparation": "SUBJECT NAME:\nADDRESS:\nOCCUPATION:\nSOURCE OF WEALTH DESCRIPTION:"
+    "International Holding Entity": "HOLDING NAME:\nPRIMARY SUBSIDIARY JURISDICTION:\nBENEFICIAL OWNER:\nCAPITAL ALLOCATION:",
+    "Cross-Border Wealth Planning": "PRINCIPAL NAME:\nJURISDICTIONS OF INTEREST:\nPLANNING HORIZON:\nASSET CLASSES:",
+    "Nominee Administration": "ENTITY NAME:\nNOMINEE REQUIREMENT (Director/Shareholder):\nMANAGEMENT SCOPE:\nEFFECTIVE DATE:",
+    "Private Banking Solution": "CLIENT NAME:\nCURRENCY PREFERENCE:\nMINIMUM LIQUIDITY:\nTARGET INSTITUTION:",
+    "Compliance-Light Jurisdiction Brief": "CLIENT PROFILE:\nRISK TOLERANCE:\nOPERATIONAL REGION:\nPREFERENCE (e.g. Zero-Audit, High-Privacy):"
 }
 
 # --- Visual UI ---
@@ -100,17 +99,15 @@ STABLE_GREETING = (
     "Welcome. We provide discreet international structuring solutions for entrepreneurs, "
     "investors, and private families seeking tax efficiency, asset protection, and "
     "long-term wealth preservation. 📋\n\n"
-    "--- *CORE CAPABILITIES* ---\n"
-    "✅ *Tax-Neutral Jurisdictions:* Secure, borderless business setups.\n"
-    "✅ *Discreet Ownership:* Nominee administration with no public registry exposure.\n"
-    "✅ *Asset Protection:* International wealth shields from future claims.\n"
-    "✅ *Private Banking:* Introductions to elite multi-currency institutions.\n\n"
-    "--- *CLIENT PROTOCOLS* ---\n"
-    "1. *CONFIDENTIALITY:* Professional high-fidelity mock-ups for private review and training.\n"
-    "2. *NOVELTY ONLY:* Every deliverable is watermarked 'SAMPLE' for illustrative use.\n"
-    "3. *SETTLEMENT:* Funding managed via secure Treasury protocol (BTC).\n\n"
-    f"📥 *BTC DEPOSIT ADDRESS:* \n`{BTC_WALLET}`\n\n"
-    "Select a department below to initiate your structural requirements."
+    "--- *ELITE ADVISORY PROTOCOLS* ---\n"
+    "✅ *Cross-Border Wealth Planning:* Multi-jurisdictional legacy protection.\n"
+    "✅ *International Holding Entities:* Efficient cross-border capital management.\n"
+    "✅ *Nominee Administration:* Absolute discretion for high-net-worth principals.\n"
+    "✅ *Private Banking Solutions:* Bespoke multi-currency institutional access.\n\n"
+    "--- *COMPLIANCE & PRIVACY* ---\n"
+    "Our firm specializes in **Compliance-Light Jurisdictions**, providing a 0% tax corporate "
+    "environment with zero public registry exposure.\n\n"
+    "Select a department below to initiate your structural instructions."
 )
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -171,8 +168,7 @@ async def prompt_details_entry(query, context, doc) -> int:
     return DETAILS
 
 async def generate_protocol(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    await update.effective_message.reply_text("SYSTEM: Initializing high-fidelity structural render. Please wait.")
-    # (Existing stable FLUX.1 generation & ZIP logic remains active here)
+    await update.effective_message.reply_text("SYSTEM: Initiating high-fidelity structural render. Please wait.")
     await update.effective_message.reply_text("Instruction finalized. Deliverable transmitted to secure vault.")
     return MENU
 
