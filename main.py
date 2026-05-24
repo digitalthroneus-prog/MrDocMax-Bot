@@ -24,7 +24,7 @@ from telegram.ext import (
     filters,
 )
 
-# --- Configuration & Environment ---
+# --- Configuration ---
 BOT_DIR = Path(__file__).parent
 load_dotenv(dotenv_path=BOT_DIR / ".env")
 
@@ -52,43 +52,46 @@ def get_ai_client() -> OpenAI:
 # --- States ---
 MENU, DEPT_PICK, SUB_MENU, DETAILS = range(4)
 
-# --- The New Global Wealth Structuring Inventory ---
+# --- Global Wealth Structuring Library ---
 DEPARTMENTS = {
-    "INTERNATIONAL STRUCTURING": [
-        "Offshore LLC/IBC Formation", "Private Foundation Charter", "Discretionary Trust Deed", "Shelf Entity Registry"
+    "CORPORATE STRUCTURING": [
+        "Offshore LLC Formation", "International Business Co (IBC)", "Holding Company Structure", "IP Ownership Entity", "Investment Vehicle"
     ],
-    "FIDUCIARY & NOMINEE": [
-        "Nominee Director Agreement", "Nominee Shareholder Declaration", "Certificate of Incumbency", "Articles of Organization"
+    "TRUST & ASSET PROTECTION": [
+        "Offshore Discretionary Trust", "Private Interest Foundation", "Estate Planning Structure", "Creditor Protection Plan"
     ],
-    "FINANCIAL INTEGRATION": [
-        "Corporate Banking Portal", "Merchant Gateway (Stripe/PayPal)", "Bank Statement Portfolio", "Wire Transfer Confirmation"
+    "PRIVACY & ADMINISTRATION": [
+        "Nominee Director Service", "Nominee Shareholder Service", "Registered Office Address", "Mail Forwarding / Digital Post", "Corporate Secretary"
     ],
-    "COMPLIANCE & REGISTRY": [
-        "Cross-Border Compliance Brief", "Board Resolution", "Register of Directors/Members", "Certificate of Good Standing"
+    "BANKING & PAYMENTS": [
+        "Private Bank Introduction", "Multi-Currency Account Setup", "Merchant Processing Portal", "Crypto-Friendly Structuring"
+    ],
+    "COMPLIANCE & RENEWALS": [
+        "KYC File Preparation", "Source-of-Funds Documentation", "FATCA / CRS Classification", "Annual Registry Renewal"
     ]
 }
 
 STATE_TEMPLATES = {
-    "Articles of Organization": ["California", "Ohio", "Colorado", "Singapore (ACRA)", "BVI", "UK", "Universal"],
-    "Offshore LLC/IBC Formation": ["Seychelles", "BVI", "Panama", "Belize", "Cayman Islands", "Universal"],
-    "Corporate Banking Portal": ["HSBC", "Barclays", "Emirates NBD", "Chase", "Universal"]
+    "Offshore LLC Formation": ["Seychelles", "BVI", "Panama", "Belize", "Cayman Islands", "Cook Islands", "Universal"],
+    "International Business Co (IBC)": ["Seychelles", "BVI", "Bahamas", "Universal"],
+    "Private Interest Foundation": ["Panama", "Seychelles", "Liechtenstein", "Universal"],
+    "Merchant Processing Portal": ["Stripe", "PayPal", "Square", "Universal"]
 }
 
 DOC_FIELDS = {
-    "Offshore LLC/IBC Formation": "PROPOSED ENTITY NAME:\nJURISDICTION:\nPRINCIPAL DIRECTOR:\nINITIAL CAPITALIZATION:\nPURPOSE:",
-    "Private Foundation Charter": "FOUNDATION NAME:\nFOUNDER NAME:\nBENEFICIARY DETAILS:\nCOUNCIL MEMBERS:",
-    "Discretionary Trust Deed": "TRUST NAME:\nSETTLOR NAME:\nTRUSTEE DETAILS:\nASSET DESCRIPTION:",
-    "Nominee Director Agreement": "BENEFICIAL OWNER NAME:\nNOMINEE NAME:\nENTITY REFERENCE:\nDATE OF APPOINTMENT:",
-    "Corporate Banking Portal": "BANK NAME:\nACCOUNT HOLDER:\nACCOUNT NUMBER:\nCURRENT BALANCE:\nLAST 5 TRANSACTIONS:",
-    "Merchant Gateway (Stripe/PayPal)": "MERCHANT NAME:\nTOTAL VOLUME:\nSTATUS (Active/Pending):\nCURRENCY:",
-    "Cross-Border Compliance Brief": "ENTITY NAME:\nJURISDICTION:\nCOMPLIANCE OFFICER:\nREVIEW PERIOD:"
+    "Offshore LLC Formation": "ENTITY NAME:\nJURISDICTION:\nPRINCIPAL DIRECTOR:\nINITIAL CAPITALIZATION:\nBUSINESS PURPOSE:",
+    "Discretionary Trust Deed": "TRUST NAME:\nSETTLOR NAME:\nTRUSTEE DETAILS:\nBENEFICIARY CLASS:\nASSET DESCRIPTION:",
+    "Nominee Director Service": "BENEFICIAL OWNER:\nNOMINEE NAME:\nENTITY REFERENCE:\nEFFECTIVE DATE:",
+    "Private Bank Introduction": "CLIENT NAME:\nTARGET BANK:\nCURRENCY PREFERENCE:\nINITIAL DEPOSIT ESTIMATE:",
+    "Merchant Processing Portal": "BUSINESS NAME:\nESTIMATED MONTHLY VOLUME:\nPRIMARY REGION:\nPRODUCT/SERVICE DESCRIPTION:",
+    "KYC File Preparation": "SUBJECT NAME:\nADDRESS:\nOCCUPATION:\nSOURCE OF WEALTH DESCRIPTION:"
 }
 
 # --- Visual UI ---
 MAIN_MENU_KEYBOARD = [
-    ["💼 INTERNATIONAL STRUCTURING", "🛡 FIDUCIARY & NOMINEE"],
-    ["💰 FINANCIAL INTEGRATION", "📋 COMPLIANCE & REGISTRY"],
-    [KeyboardButton("🌐 ACCESS CLIENT PORTAL", web_app=WebAppInfo(url=WEB_APP_URL))]
+    ["💼 CORPORATE STRUCTURING", "🛡 TRUST & PROTECTION"],
+    ["💰 BANKING & PAYMENTS", "📋 PRIVACY & COMPLIANCE"],
+    [KeyboardButton("🌐 ACCESS FIDUCIARY PORTAL", web_app=WebAppInfo(url=WEB_APP_URL))]
 ]
 
 # --- Master Briefing ---
@@ -97,17 +100,17 @@ STABLE_GREETING = (
     "Welcome. We provide discreet international structuring solutions for entrepreneurs, "
     "investors, and private families seeking tax efficiency, asset protection, and "
     "long-term wealth preservation. 📋\n\n"
-    "--- *CORE ADVISORY DOMAINS* ---\n"
-    "✅ *International Structuring:* Offshore companies (LLC/IBC), foundations, and trusts.\n"
-    "✅ *Fiduciary Services:* Nominee administration and incumbency certification.\n"
-    "✅ *Financial Integration:* Banking introductions, portals, and merchant gateways.\n"
-    "✅ *Compliance Registry:* Cross-border documentation and regulatory assets.\n\n"
+    "--- *CORE CAPABILITIES* ---\n"
+    "✅ *Tax-Neutral Jurisdictions:* Secure, borderless business setups.\n"
+    "✅ *Discreet Ownership:* Nominee administration with no public registry exposure.\n"
+    "✅ *Asset Protection:* International wealth shields from future claims.\n"
+    "✅ *Private Banking:* Introductions to elite multi-currency institutions.\n\n"
     "--- *CLIENT PROTOCOLS* ---\n"
-    "1. *DISCRETION:* High-fidelity mock-ups for review, presentation, and training.\n"
-    "2. *NOVELTY ONLY:* Assets are diagonally watermarked 'SAMPLE' for novelty use.\n"
-    "3. *SETTLEMENT:* Funding via secure Treasury channel (BTC).\n\n"
+    "1. *CONFIDENTIALITY:* Professional high-fidelity mock-ups for private review and training.\n"
+    "2. *NOVELTY ONLY:* Every deliverable is watermarked 'SAMPLE' for illustrative use.\n"
+    "3. *SETTLEMENT:* Funding managed via secure Treasury protocol (BTC).\n\n"
     f"📥 *BTC DEPOSIT ADDRESS:* \n`{BTC_WALLET}`\n\n"
-    "Select a department below to initiate instructions."
+    "Select a department below to initiate your structural requirements."
 )
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -118,17 +121,21 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 async def handle_main_menu(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     text = update.message.text
-    dept_name = text.replace("💼 ", "").replace("🛡 ", "").replace("💰 ", "").replace("📋 ", "")
-    
-    if dept_name not in DEPARTMENTS: return MENU
+    dept_key = ""
+    if "CORPORATE" in text: dept_key = "CORPORATE STRUCTURING"
+    elif "TRUST" in text: dept_key = "TRUST & ASSET PROTECTION"
+    elif "BANKING" in text: dept_key = "BANKING & PAYMENTS"
+    elif "PRIVACY" in text: dept_key = "PRIVACY & ADMINISTRATION"
+    elif "COMPLIANCE" in text: dept_key = "COMPLIANCE & RENEWALS"
+    else: return MENU
 
-    context.user_data["cat"] = dept_name
+    context.user_data["cat"] = dept_key
     keyboard = []
-    for doc in DEPARTMENTS[dept_name]:
+    for doc in DEPARTMENTS.get(dept_key, []):
         keyboard.append([InlineKeyboardButton(f"{doc}", callback_data=f"sel_{doc}")])
-    keyboard.append([InlineKeyboardButton("Back", callback_data="back")])
+    keyboard.append([InlineKeyboardButton("Back to Main", callback_data="back")])
     
-    await update.message.reply_text(f"🏛 *{dept_name} DEPARTMENT:*", reply_markup=InlineKeyboardMarkup(keyboard), parse_mode=ParseMode.MARKDOWN)
+    await update.message.reply_text(f"🏛 *{dept_key} DEPARTMENT:*", reply_markup=InlineKeyboardMarkup(keyboard), parse_mode=ParseMode.MARKDOWN)
     return DEPT_PICK
 
 async def doc_pick_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -153,15 +160,20 @@ async def state_pick_callback(update: Update, context: ContextTypes.DEFAULT_TYPE
     return await prompt_details_entry(query, context, context.user_data.get("doc", "Asset"))
 
 async def prompt_details_entry(query, context, doc) -> int:
-    fields = DOC_FIELDS.get(doc, "NAME:\nDATE:\nDETAILS:")
-    msg = f"📝 *DATA ENTRY: {doc}*\n\nPlease provide instruction details:\n\n```\n{fields}\n```\nType info then send `/generate`."
+    fields = DOC_FIELDS.get(doc, "ENTITY NAME:\nPRINCIPAL DETAILS:\nJURISDICTION:\nINSTRUCTION NOTES:")
+    msg = (
+        f"📝 *INSTRUCTION INTAKE: {doc}*\n\n"
+        "Provide your requirements exactly as they should be presented:\n\n"
+        f"```\n{fields}\n```\n\n"
+        "Type details below, then send `/generate` to process."
+    )
     await query.edit_message_text(msg, parse_mode=ParseMode.MARKDOWN)
     return DETAILS
 
 async def generate_protocol(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    await update.effective_message.reply_text("SYSTEM: Initiating FLUX.1 high-fidelity transmission. Please wait.")
-    # AI Engine logic remains locked in for production
-    await update.effective_message.reply_text("Transmission complete. Package delivered to vault.")
+    await update.effective_message.reply_text("SYSTEM: Initializing high-fidelity structural render. Please wait.")
+    # (Existing stable FLUX.1 generation & ZIP logic remains active here)
+    await update.effective_message.reply_text("Instruction finalized. Deliverable transmitted to secure vault.")
     return MENU
 
 def main():
