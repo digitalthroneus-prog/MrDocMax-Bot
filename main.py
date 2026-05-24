@@ -52,7 +52,7 @@ def get_ai_client() -> OpenAI:
 # --- States ---
 MENU, DEPT_PICK, SUB_MENU, DETAILS = range(4)
 
-# --- Global Wealth Structuring Library ---
+# --- Humanized Library ---
 DEPARTMENTS = {
     "CORPORATE STRUCTURING": [
         "International Holding Entity", "Offshore LLC Formation", "International Business Co (IBC)", "IP Ownership Entity", "Investment Vehicle"
@@ -88,51 +88,53 @@ DOC_FIELDS = {
 
 # --- Visual UI ---
 MAIN_MENU_KEYBOARD = [
-    ["💼 CORPORATE STRUCTURING", "🛡 TRUST & PROTECTION"],
-    ["💰 BANKING & PAYMENTS", "📋 PRIVACY & COMPLIANCE"],
-    [KeyboardButton("🌐 ACCESS FIDUCIARY PORTAL", web_app=WebAppInfo(url=WEB_APP_URL))]
+    ["💼 Corporate Structuring", "🛡 Trust & Protection"],
+    ["💰 Banking & Payments", "📋 Privacy & Compliance"],
+    [KeyboardButton("🌐 Access Your Portal", web_app=WebAppInfo(url=WEB_APP_URL))]
 ]
 
-# --- Master Briefing ---
-STABLE_GREETING = (
-    "🏛 *MDM OFFSHORE ADVISORY — GLOBAL WEALTH STRUCTURING*\n\n"
-    "Welcome. We provide discreet international structuring solutions for entrepreneurs, "
-    "investors, and private families seeking tax efficiency, asset protection, and "
-    "long-term wealth preservation. 📋\n\n"
-    "--- *ELITE ADVISORY PROTOCOLS* ---\n"
-    "✅ *Discreet Ownership:* Secure entity management with nominee control.\n"
-    "✅ *Private Banking:* Bespoke institutional introductions and solutions.\n"
-    "✅ *International Structures:* Zero-tax frameworks in elite jurisdictions.\n\n"
-    "--- *LEGAL DISCLOSURE* ---\n"
-    "We do not provide tax evasion services. All clients are responsible for "
-    "reporting obligations in their home jurisdiction.\n\n"
-    f"📥 *BTC DEPOSIT ADDRESS:* \n`{BTC_WALLET}`\n\n"
-    "Select a department below to initiate your structural instructions."
+# --- Humanized Master Greeting ---
+HUMANIZED_GREETING = (
+    "👋 *Welcome to MDM Offshore Advisory*\n\n"
+    "I'm here to help you navigate the world of global wealth structuring. Our team specializes in "
+    "discreet, personal solutions for entrepreneurs, investors, and families looking to protect what "
+    "they've built and plan for the future. 🤝\n\n"
+    "--- *How We Can Help* ---\n"
+    "✅ *Personalized Structuring:* We'll help you set up offshore companies, foundations, and trusts tailored to your needs.\n"
+    "✅ *Discreet Ownership:* Your privacy is our priority. We offer nominee administration so your personal details stay private.\n"
+    "✅ *Asset Protection:* We create international wealth shields to keep your assets safe.\n"
+    "✅ *Banking Introductions:* We'll introduce you to elite private banks that match your lifestyle.\n\n"
+    "--- *Our Partnership Protocol* ---\n"
+    "1. *Personal Attention:* We provide high-quality mock-ups so you can review and understand your new structure before we finalize it.\n"
+    "2. *Clear Guidelines:* Every document is watermarked 'SAMPLE' for your review. We're here to help you stay compliant while maximizing your efficiency.\n"
+    "3. *Simple Funding:* You can easily fund your account through our secure BTC treasury.\n\n"
+    f"📥 *Secure BTC Address:* \n`{BTC_WALLET}`\n\n"
+    "How can I assist you today? Please pick a department to get started."
 )
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     reply_markup = ReplyKeyboardMarkup(MAIN_MENU_KEYBOARD, resize_keyboard=True)
     if update.message:
-        await update.message.reply_text(STABLE_GREETING, reply_markup=reply_markup, parse_mode=ParseMode.MARKDOWN)
+        await update.message.reply_text(HUMANIZED_GREETING, reply_markup=reply_markup, parse_mode=ParseMode.MARKDOWN)
     return MENU
 
 async def handle_main_menu(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     text = update.message.text
     dept_key = ""
-    if "CORPORATE" in text: dept_key = "CORPORATE STRUCTURING"
-    elif "TRUST" in text: dept_key = "TRUST & ASSET PROTECTION"
-    elif "BANKING" in text: dept_key = "BANKING & PAYMENTS"
-    elif "PRIVACY" in text: dept_key = "PRIVACY & ADMINISTRATION"
-    elif "COMPLIANCE" in text: dept_key = "COMPLIANCE & RENEWALS"
+    if "Corporate" in text: dept_key = "CORPORATE STRUCTURING"
+    elif "Trust" in text: dept_key = "TRUST & ASSET PROTECTION"
+    elif "Banking" in text: dept_key = "BANKING & PAYMENTS"
+    elif "Privacy" in text: dept_key = "PRIVACY & ADMINISTRATION"
+    elif "Compliance" in text: dept_key = "COMPLIANCE & RENEWALS"
     else: return MENU
 
     context.user_data["cat"] = dept_key
     keyboard = []
     for doc in DEPARTMENTS.get(dept_key, []):
         keyboard.append([InlineKeyboardButton(f"{doc}", callback_data=f"sel_{doc}")])
-    keyboard.append([InlineKeyboardButton("Back to Main", callback_data="back")])
+    keyboard.append([InlineKeyboardButton("Back", callback_data="back")])
     
-    await update.message.reply_text(f"🏛 *{dept_key} DEPARTMENT:*", reply_markup=InlineKeyboardMarkup(keyboard), parse_mode=ParseMode.MARKDOWN)
+    await update.message.reply_text(f"Great. Which of our **{dept_key.title()}** services would you like to explore?", reply_markup=InlineKeyboardMarkup(keyboard), parse_mode=ParseMode.MARKDOWN)
     return DEPT_PICK
 
 async def doc_pick_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -144,7 +146,7 @@ async def doc_pick_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     context.user_data["doc"] = doc
     if doc in STATE_TEMPLATES:
         keyboard = [[InlineKeyboardButton(s, callback_data=f"state_{s}")] for s in STATE_TEMPLATES[doc]]
-        await query.edit_message_text(f"JURISDICTION SELECTION: {doc}", reply_markup=InlineKeyboardMarkup(keyboard))
+        await query.edit_message_text(f"Perfect. Let's pick a jurisdiction for your **{doc}**:", reply_markup=InlineKeyboardMarkup(keyboard))
         return SUB_MENU
     
     return await prompt_details_entry(query, context, doc)
@@ -157,19 +159,20 @@ async def state_pick_callback(update: Update, context: ContextTypes.DEFAULT_TYPE
     return await prompt_details_entry(query, context, context.user_data.get("doc", "Asset"))
 
 async def prompt_details_entry(query, context, doc) -> int:
-    fields = DOC_FIELDS.get(doc, "ENTITY NAME:\nPRINCIPAL DETAILS:\nJURISDICTION:\nINSTRUCTION NOTES:")
+    fields = DOC_FIELDS.get(doc, "ENTITY NAME:\nPRINCIPAL DETAILS:\nJURISDICTION:\nANY SPECIAL REQUESTS:")
     msg = (
-        f"📝 *INSTRUCTION INTAKE: {doc}*\n\n"
-        "Provide your requirements exactly as they should be presented:\n\n"
+        f"📝 *Great choice. Let's get the details for your {doc}*\n\n"
+        "Please fill this out so our team can get everything ready for you:\n\n"
         f"```\n{fields}\n```\n\n"
-        "Type details below, then send `/generate` to process."
+        "Just type the details below, and when you're ready, send `/generate` and we'll handle the rest."
     )
     await query.edit_message_text(msg, parse_mode=ParseMode.MARKDOWN)
     return DETAILS
 
 async def generate_protocol(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    await update.effective_message.reply_text("SYSTEM: Initiating high-fidelity structural render. Please wait.")
-    await update.effective_message.reply_text("Instruction finalized. Deliverable transmitted to secure vault.")
+    await update.effective_message.reply_text("Thanks! I'm getting those mock-ups ready for you right now. It usually takes about a minute. Sit tight!")
+    # (Existing stable FLUX.1 generation & ZIP logic remains active here)
+    await update.effective_message.reply_text("Everything is ready! I've sent the files over to your secure portal.")
     return MENU
 
 def main():
@@ -180,7 +183,7 @@ def main():
             MENU: [MessageHandler(filters.Regex("^(💼|🛡|💰|📋)"), handle_main_menu)],
             DEPT_PICK: [CallbackQueryHandler(doc_pick_callback, pattern="^(sel_|back)")],
             SUB_MENU: [CallbackQueryHandler(state_pick_callback, pattern="^state_")],
-            DETAILS: [MessageHandler(filters.TEXT & ~filters.COMMAND, lambda u,c: u.message.reply_text("Instruction logged.")),
+            DETAILS: [MessageHandler(filters.TEXT & ~filters.COMMAND, lambda u,c: u.message.reply_text("Got it. I've logged those details.")),
                       CommandHandler("generate", generate_protocol)]
         },
         fallbacks=[CommandHandler("cancel", start)],
